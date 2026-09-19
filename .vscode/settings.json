@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "UnityArcanoid2D.sln"
+    "dotnet.defaultSolution": "arcanoid.sln"
 }
