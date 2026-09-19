@@ -11,6 +11,7 @@ public class BallScript : MonoBehaviour
     AudioSource audioSrc;
     public AudioClip hitSound;
     public AudioClip loseSound;
+    public GameDataScript gameData;
 
     void Start()
     {
@@ -36,16 +37,28 @@ public class BallScript : MonoBehaviour
                 transform.position = pos;
             }
         }
+        else if (Input.GetKeyDown(KeyCode.J))
+        {
+            Vector2 v = rb.velocity;
+            if (Random.Range(0, 2) == 0)
+                v.Set(v.x - 0.1f, v.y + 1f);
+            else
+                v.Set(v.x + 0.1f, v.y - 1f);
+            rb.velocity = v;            
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        audioSrc.PlayOneShot(loseSound);
+        if (gameData.sound)
+            audioSrc.PlayOneShot(loseSound, 5);
         Destroy(gameObject);
+        playerObj.GetComponent<PlayerScript>().BallDestroyed();
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        audioSrc.PlayOneShot(hitSound);
+        if (gameData.sound)
+            audioSrc.PlayOneShot(hitSound, 5);
     }
 }

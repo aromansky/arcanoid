@@ -9,6 +9,8 @@ public class BlockScript : MonoBehaviour
     TMP_Text textComponent;
     public int hitsToDestroy;
     public int points;
+    PlayerScript playerScript;
+
     void Start()
     {
         if (textObj != null)
@@ -16,6 +18,8 @@ public class BlockScript : MonoBehaviour
             textComponent = textObj.GetComponent<TMP_Text>();
             textComponent.text = hitsToDestroy.ToString();
         }
+
+        playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
     }
 
     void Update()
@@ -28,8 +32,8 @@ public class BlockScript : MonoBehaviour
         hitsToDestroy--;
         if (hitsToDestroy == 0)
         {
-            print(points);
             Destroy(gameObject);
+            playerScript.BlockDestroyed(points);
         }
         else if (textComponent != null)
         {
