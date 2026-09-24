@@ -74,10 +74,10 @@ public class PlayerScript : MonoBehaviour
         float yMax = Camera.main.orthographicSize * 0.8f;
         float xMax = Camera.main.orthographicSize * Camera.main.aspect * 0.85f;
 
-        CreateBlocks(bluePrefab, xMax, yMax, level, 8);
-        CreateBlocks(redPrefab, xMax, yMax, level + 1, 10);
-        CreateBlocks(greenPrefab, xMax, yMax, level + 1, 12);
-        CreateBlocks(yellowPrefab, xMax, yMax, level + 2, 15);
+        // CreateBlocks(bluePrefab, xMax, yMax, level, 8);
+        // CreateBlocks(redPrefab, xMax, yMax, level + 1, 10);
+        CreateBlocks(greenPrefab, xMax, yMax, level + 1, 1);
+        // CreateBlocks(yellowPrefab, xMax, yMax, level + 2, 15);
 
         CreateBalls();
     }

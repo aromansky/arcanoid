@@ -13,6 +13,7 @@ public class GameDataScript: ScriptableObject
     public bool music = true;
     public bool sound = true;
     public int pointsToBall = 0;
+    public GameObject bonusPrefab;
 
     public void Reset()
     {

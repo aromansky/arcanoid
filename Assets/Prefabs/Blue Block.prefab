@@ -146,3 +146,4 @@ MonoBehaviour:
   textObj: {fileID: 0}
   hitsToDestroy: 30
   points: 100
+  blockType: 2

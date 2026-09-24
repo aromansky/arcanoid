@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resetOnStart: 1
   level: 1
-  balls: 2
-  points: 110
+  balls: 6
+  points: 0
   music: 1
   sound: 1
-  pointsToBall: 380
+  pointsToBall: 0
+  bonusPrefab: {fileID: 2488671173602561190, guid: e218c33016fd81841a49c8e793e8c008, type: 3}
