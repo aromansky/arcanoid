@@ -13,10 +13,17 @@ MonoBehaviour:
   m_Name: Game Data
   m_EditorClassIdentifier: 
   resetOnStart: 1
-  level: 1
-  balls: 6
-  points: 0
+  level: 7
+  balls: 14
+  points: 900
   music: 1
   sound: 1
-  pointsToBall: 0
+  pointsToBall: 500
   bonusPrefab: {fileID: 2488671173602561190, guid: e218c33016fd81841a49c8e793e8c008, type: 3}
+  testlevels: 1
+  weightPlus100: 20
+  weightSlow: 15
+  weightFast: 15
+  weightBall: 15
+  weightPlus2: 20
+  weightPlus10: 15

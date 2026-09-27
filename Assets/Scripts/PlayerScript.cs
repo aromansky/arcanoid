@@ -17,14 +17,14 @@ public class PlayerScript : MonoBehaviour
     public GameObject yellowPrefab;
     public GameObject greenPrefab;
     public GameObject ballPrefab;
-    static Collider2D[] colliders = new Collider2D [50];
+    static Collider2D[] colliders = new Collider2D[50];
     static ContactFilter2D contactFilter = new ContactFilter2D();
     public GameDataScript gameData;
     static bool gameStarted = false;
     AudioSource audioSrc;
     public AudioClip pointSound;
-    int requiredPointsToBall {get {return 400 + (level - 1) * 20;}}
-    
+    int requiredPointsToBall { get { return 400 + (level - 1) * 20; } }
+
     void SetBackground()
     {
         SpriteRenderer bg = GameObject.Find("Background").GetComponent<SpriteRenderer>();
@@ -36,14 +36,14 @@ public class PlayerScript : MonoBehaviour
         if (count > maxCount)
             count = maxCount;
 
-        for(int i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
         {
             for (int k = 0; k < 20; k++)
             {
                 GameObject obj = Instantiate(prefab, new Vector3((Random.value * 2 - 1) * xMax,
                                                                   Random.value * yMax, 0),
                                                                 Quaternion.identity);
-                
+
                 if (obj.GetComponent<Collider2D>().OverlapCollider(contactFilter.NoFilter(), colliders) == 0)
                     break;
                 Destroy(obj);
@@ -51,34 +51,70 @@ public class PlayerScript : MonoBehaviour
             }
         }
     }
-
-    void CreateBalls()
+    
+    public void CreateBalls(int count = 2, bool bonus = false)
     {
-        int count = 2;
-
-        if  (gameData.balls == 1)
+        if (!bonus && gameData.balls == 1)
             count = 1;
 
         for (int i = 0; i < count; i++)
         {
-            GameObject obj = Instantiate(ballPrefab);
+            Vector3 spawnPos = bonus ? transform.position + new Vector3(0, 0.6f, 0) : ballPrefab.transform.position;
+            
+            GameObject obj = Instantiate(ballPrefab, spawnPos, Quaternion.identity);
             BallScript ball = obj.GetComponent<BallScript>();
-            ball.ballInitialForce += new Vector2(10 * i, 0);
-            ball.ballInitialForce *= 1 + level * ballVolicityMult;
+            ball.gameData = gameData;
+
+            // ball.ballInitialForce += new Vector2(10 * i, 0);
+            ball.ballInitialForce += new Vector2((i - count / 2f) * 20f, 0);
+            if (!gameData.testlevels)
+                ball.ballInitialForce *= 1 + level * ballVolicityMult;
+
+            if (bonus)
+            {
+                Rigidbody2D rb = obj.GetComponent<Rigidbody2D>();
+                rb.isKinematic = false;
+                rb.AddForce(ball.ballInitialForce);
+            }
+        }
+    }
+
+
+    void CreateTestLevel()
+    {
+        float yPos = Camera.main.orthographicSize * 0.25f;
+
+        float scaleMultiplier = 2.0f;
+
+        float stepX = 2.0f * scaleMultiplier;
+        float startX = -stepX;
+
+        for (int i = 0; i < 3; i++)
+        {
+            Vector3 pos = new Vector3(startX + i * stepX, yPos, 0);
+            GameObject block = Instantiate(greenPrefab, pos, Quaternion.identity);
+            block.transform.localScale *= scaleMultiplier;
         }
     }
 
     void StartLevel()
     {
         SetBackground();
-        float yMax = Camera.main.orthographicSize * 0.8f;
-        float xMax = Camera.main.orthographicSize * Camera.main.aspect * 0.85f;
 
-        CreateBlocks(bluePrefab, xMax, yMax, level, 8);
-        CreateBlocks(redPrefab, xMax, yMax, level + 1, 10);
-        CreateBlocks(greenPrefab, xMax, yMax, level + 1, 12);
-        CreateBlocks(yellowPrefab, xMax, yMax, level + 2, 15);
+        if (gameData.testlevels)
+        {
+            CreateTestLevel();
+        }
+        else
+        {
+            float yMax = Camera.main.orthographicSize * 0.8f;
+            float xMax = Camera.main.orthographicSize * Camera.main.aspect * 0.85f;
 
+            CreateBlocks(bluePrefab, xMax, yMax, level, 8);
+            CreateBlocks(redPrefab, xMax, yMax, level + 1, 10);
+            CreateBlocks(greenPrefab, xMax, yMax, level + 1, 1);
+            CreateBlocks(yellowPrefab, xMax, yMax, level + 2, 15);
+        }
         CreateBalls();
     }
 
@@ -95,7 +131,7 @@ public class PlayerScript : MonoBehaviour
         }
 
         level = gameData.level;
-        
+
         SetMusic();
         StartLevel();
     }
@@ -119,7 +155,7 @@ public class PlayerScript : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.S))
             gameData.sound = !gameData.sound;
-        
+
         if (Input.GetButtonDown("Pause"))
         {
             if (Time.timeScale > 0)
@@ -185,7 +221,7 @@ public class PlayerScript : MonoBehaviour
         }
         StartCoroutine(BlockDestroyedCoroutine());
     }
-    
+
     IEnumerator BlockDestroyedCoroutine()
     {
         yield return new WaitForSeconds(0.01f);
@@ -201,13 +237,13 @@ public class PlayerScript : MonoBehaviour
     {
         GUI.Label(new Rect(5, 4, Screen.width - 10, 100),
             string.Format(
-                        "<color=yellow><size=30>Level <b>{0}</b> Balls <b>{1}</b>"+
+                        "<color=yellow><size=30>Level <b>{0}</b> Balls <b>{1}</b>" +
                         " Score <b>{2}</b></size></color>",
                         gameData.level, gameData.balls, gameData.points));
-        
+
         GUI.Label(new Rect(5, 4, Screen.width - 10, 100),
         string.Format(
-                        "<color=yellow><size=30>Level <b>{0}</b> Balls <b>{1}</b>"+
+                        "<color=yellow><size=30>Level <b>{0}</b> Balls <b>{1}</b>" +
                         " Score <b>{2}</b></size></color>",
                         gameData.level, gameData.balls, gameData.points));
         GUIStyle style = new GUIStyle();
@@ -240,7 +276,7 @@ public class PlayerScript : MonoBehaviour
             audioSrc.PlayOneShot(pointSound, 5);
         }
     }
- 
+
     string OnOff(bool boolVal)
     {
         return boolVal ? "on" : "off";

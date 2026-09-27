@@ -47,13 +47,11 @@ public class BlockScript : MonoBehaviour
             {
                 GameDataScript gameData = playerScript.gameData;
                 GameObject obj = Instantiate(gameData.bonusPrefab, transform.position, Quaternion.identity);
-                BonusBase bonus = obj.AddComponent<BonusBase>();
-                bonus.gameData = gameData;
-                bonus.Apply();
+                gameData.CreateBonus(obj); 
             }
 
             Destroy(gameObject);
-            playerScript.BlockDestroyed(points);            
+            playerScript.BlockDestroyed(points);
         }
         else if (textComponent != null)
         {

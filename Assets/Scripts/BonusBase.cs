@@ -15,7 +15,7 @@ public class BonusBase : MonoBehaviour
     
     public GameDataScript gameData;
 
-    void Awake()
+    protected virtual void Awake()
     {
         textTMP = GetComponentInChildren<TMP_Text>();
     }
