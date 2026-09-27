@@ -127,7 +127,7 @@ public class PlayerScript : MonoBehaviour
         {
             gameStarted = true;
             if (gameData.resetOnStart)
-                gameData.Reset();
+                gameData.Load();
         }
 
         level = gameData.level;
