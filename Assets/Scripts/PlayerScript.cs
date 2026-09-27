@@ -64,7 +64,7 @@ public class PlayerScript : MonoBehaviour
             GameObject obj = Instantiate(ballPrefab);
             BallScript ball = obj.GetComponent<BallScript>();
             ball.ballInitialForce += new Vector2(10 * i, 0);
-            ball.ballInitialForce *= 1 + level + ballVolicityMult;
+            ball.ballInitialForce *= 1 + level * ballVolicityMult;
         }
     }
 
