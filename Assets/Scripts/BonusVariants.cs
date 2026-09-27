@@ -76,7 +76,7 @@ public class BonusPlus2 : BonusBase
         gameData.balls += 2;
         PlayerScript player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
         if (player != null)
-            player.CreateBalls(2);
+            player.CreateBalls(2, bonus: true);
     }
 }
 
@@ -95,6 +95,6 @@ public class BonusPlus10 : BonusBase
         gameData.balls += 10;
         PlayerScript player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
         if (player != null)
-            player.CreateBalls(10);
+            player.CreateBalls(10, bonus: true);
     }
 }

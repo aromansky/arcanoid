@@ -84,7 +84,7 @@ public class PlayerScript : MonoBehaviour
     {
         float yPos = Camera.main.orthographicSize * 0.25f;
 
-        float scaleMultiplier = 1.5f;
+        float scaleMultiplier = 2.0f;
 
         float stepX = 2.0f * scaleMultiplier;
         float startX = -stepX;
