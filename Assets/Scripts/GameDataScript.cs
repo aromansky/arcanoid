@@ -1,4 +1,14 @@
 using UnityEngine;
+using System.Collections.Generic;
+
+public enum BonusType { Plus100, Slow, Fast, Ball, Plus2, Plus10, Fire, Steel, Norm }
+
+[System.Serializable]
+public class BonusWeightEntry
+{
+    public BonusType type;
+    public float weight = 10f;
+}
 
 [CreateAssetMenu(fileName = "Game Data", menuName = "Game Data", order = 51)]
 public class GameDataScript : ScriptableObject
@@ -13,20 +23,22 @@ public class GameDataScript : ScriptableObject
     public GameObject bonusPrefab;
     public bool testlevels = false;
 
-    [Header("����������� ��������� ������� (����)")]
-    public float weightPlus100 = 20f;
-    public float weightSlow = 15f;
-    public float weightFast = 15f;
-    public float weightBall = 15f;
-    public float weightPlus2 = 20f;
-    public float weightPlus10 = 15f;
-    public float weightFireBall = 15f;
-    public float weightSteelBall = 15f;
-    public float weightNormBall = 20f;
+    [Header("Веса бонусов")]
+    public List<BonusWeightEntry> bonusWeights = new List<BonusWeightEntry>
+    {
+        new BonusWeightEntry { type = BonusType.Plus100, weight = 20f },
+        new BonusWeightEntry { type = BonusType.Slow,    weight = 15f },
+        new BonusWeightEntry { type = BonusType.Fast,    weight = 15f },
+        new BonusWeightEntry { type = BonusType.Ball,    weight = 15f },
+        new BonusWeightEntry { type = BonusType.Plus2,   weight = 20f },
+        new BonusWeightEntry { type = BonusType.Plus10,  weight = 15f },
+        new BonusWeightEntry { type = BonusType.Fire,    weight = 15f },
+        new BonusWeightEntry { type = BonusType.Steel,   weight = 15f },
+        new BonusWeightEntry { type = BonusType.Norm,    weight = 20f },
+    };
 
     public System.Type GetRandomBonusType()
     {
-        // ���� ������� ����� �������� ������� � ����������� ���������� ����� �� ������ ������
         if (testlevels)
         {
             switch (level)
@@ -44,33 +56,34 @@ public class GameDataScript : ScriptableObject
             }
         }
 
-        // ����������� ������ �� �����
-        float totalWeight = weightPlus100 + weightSlow + weightFast + weightBall + weightPlus2 + weightPlus10 + weightFireBall + weightSteelBall + weightNormBall;
-        if (totalWeight <= 0) return typeof(BonusBase);
+        float totalWeight = 0f;
+        foreach (var e in bonusWeights) totalWeight += e.weight;
+        if (totalWeight <= 0f) return typeof(BonusBase);
 
-        float rnd = Random.Range(0, totalWeight);
+        float rnd = Random.Range(0f, totalWeight);
+        foreach (var e in bonusWeights)
+        {
+            if (rnd < e.weight) return BonusTypeToClass(e.type);
+            rnd -= e.weight;
+        }
 
-        if (rnd < weightPlus100) return typeof(BonusBase);
-        rnd -= weightPlus100;
+        return typeof(BonusBase);
+    }
 
-        if (rnd < weightSlow) return typeof(BonusSlow);
-        rnd -= weightSlow;
-
-        if (rnd < weightFast) return typeof(BonusFast);
-        rnd -= weightFast;
-
-        if (rnd < weightBall) return typeof(BonusBall);
-        rnd -= weightBall;
-
-        if (rnd < weightPlus2) return typeof(BonusPlus2);
-
-        if (rnd < weightPlus10) return typeof(BonusPlus10); rnd -= weightPlus10;
-
-        if (rnd < weightFireBall) return typeof(BonusFire); rnd -= weightFireBall;
-
-        if (rnd < weightSteelBall) return typeof(BonusSteel); rnd -= weightSteelBall;
-
-        return typeof(BonusNorm);
+    private System.Type BonusTypeToClass(BonusType t)
+    {
+        switch (t)
+        {
+            case BonusType.Slow: return typeof(BonusSlow);
+            case BonusType.Fast: return typeof(BonusFast);
+            case BonusType.Ball: return typeof(BonusBall);
+            case BonusType.Plus2: return typeof(BonusPlus2);
+            case BonusType.Plus10: return typeof(BonusPlus10);
+            case BonusType.Fire: return typeof(BonusFire);
+            case BonusType.Steel: return typeof(BonusSteel);
+            case BonusType.Norm: return typeof(BonusNorm);
+            default: return typeof(BonusBase); // Plus100
+        }
     }
 
     public void CreateBonus(GameObject bonusObj)
