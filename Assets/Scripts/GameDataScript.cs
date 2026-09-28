@@ -13,17 +13,20 @@ public class GameDataScript : ScriptableObject
     public GameObject bonusPrefab;
     public bool testlevels = false;
 
-    [Header("Вероятности выпадения бонусов (веса)")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅ)")]
     public float weightPlus100 = 20f;
     public float weightSlow = 15f;
     public float weightFast = 15f;
     public float weightBall = 15f;
     public float weightPlus2 = 20f;
     public float weightPlus10 = 15f;
+    public float weightFireBall = 15f;
+    public float weightSteelBall = 15f;
+    public float weightNormBall = 20f;
 
     public System.Type GetRandomBonusType()
     {
-        // Если включен режим тестовых уровней — гарантируем конкретный бонус на каждом уровне
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         if (testlevels)
         {
             switch (level)
@@ -34,12 +37,15 @@ public class GameDataScript : ScriptableObject
                 case 4: return typeof(BonusBall);   // Ball
                 case 5: return typeof(BonusPlus2);  // +2
                 case 6: return typeof(BonusPlus10); // +10
+                case 7: return typeof(BonusFire);   // fire balls
+                case 8: return typeof(BonusSteel);  // steel balls
+                case 9: return typeof(BonusNorm);   // norm
                 default: return typeof(BonusBase);
             }
         }
 
-        // Стандартный расчет по весам
-        float totalWeight = weightPlus100 + weightSlow + weightFast + weightBall + weightPlus2 + weightPlus10;
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+        float totalWeight = weightPlus100 + weightSlow + weightFast + weightBall + weightPlus2 + weightPlus10 + weightFireBall + weightSteelBall + weightNormBall;
         if (totalWeight <= 0) return typeof(BonusBase);
 
         float rnd = Random.Range(0, totalWeight);
@@ -58,7 +64,13 @@ public class GameDataScript : ScriptableObject
 
         if (rnd < weightPlus2) return typeof(BonusPlus2);
 
-        return typeof(BonusPlus10);
+        if (rnd < weightPlus10) return typeof(BonusPlus10); rnd -= weightPlus10;
+
+        if (rnd < weightFireBall) return typeof(BonusFire); rnd -= weightFireBall;
+
+        if (rnd < weightSteelBall) return typeof(BonusSteel); rnd -= weightSteelBall;
+
+        return typeof(BonusNorm);
     }
 
     public void CreateBonus(GameObject bonusObj)
@@ -75,6 +87,7 @@ public class GameDataScript : ScriptableObject
         balls = 6;
         points = 0;
         pointsToBall = 0;
+        BallScript.SetAllBallsType(BallScript.BallType.Normal);
     }
 
     public void Save()

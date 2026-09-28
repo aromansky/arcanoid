@@ -40,8 +40,8 @@ public class BlockScript : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        hitsToDestroy--;
-        if (hitsToDestroy == 0)
+        hitsToDestroy -= BallScript.powerOfHit;
+        if (hitsToDestroy <= 0)
         {
             if (blockType == BlockTypes.Green)
             {

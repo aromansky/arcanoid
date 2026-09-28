@@ -13,12 +13,22 @@ public class BallScript : MonoBehaviour
     public AudioClip loseSound;
     public GameDataScript gameData;
 
+    public static int powerOfHit = 1;
+    public enum BallType { Normal, Fire, Steel }
+    public static BallType currentType = BallType.Normal;
+
+    SpriteRenderer sr;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         playerObj = GameObject.FindGameObjectWithTag("Player");
         deltaX = transform.position.x;
         audioSrc = Camera.main.GetComponent<AudioSource>();
+
+        sr = GetComponent<SpriteRenderer>();
+
+        ApplyType(currentType);
     }
 
     void Update()
@@ -60,5 +70,36 @@ public class BallScript : MonoBehaviour
     {
         if (gameData.sound)
             audioSrc.PlayOneShot(hitSound, 5);
+    }
+
+    public static void SetAllBallsType(BallType type)
+    {
+        currentType = type;
+
+        switch (type)
+        {
+            case BallType.Normal: powerOfHit = 1; break;
+            case BallType.Fire: powerOfHit = 4; break;
+            case BallType.Steel: powerOfHit = 40; break;
+        }
+
+        foreach (GameObject ball in GameObject.FindGameObjectsWithTag("Ball"))
+        {
+            BallScript bs = ball.GetComponent<BallScript>();
+            if (bs != null) bs.ApplyType(type);
+        }
+    }
+
+    public void ApplyType(BallType type)
+    {
+        if (sr == null) sr = GetComponent<SpriteRenderer>();
+        if (sr == null) return;
+
+        switch (type)
+        {
+            case BallType.Normal: sr.color = Color.white; break;
+            case BallType.Fire: sr.color = new Color(1f, 0.5f, 0f, 1f); break;
+            case BallType.Steel: sr.color = Color.gray; break;
+        }
     }
 }

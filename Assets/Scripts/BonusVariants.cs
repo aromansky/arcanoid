@@ -98,3 +98,51 @@ public class BonusPlus10 : BonusBase
             player.CreateBalls(10, bonus: true);
     }
 }
+
+public class BonusFire : BonusBase
+{
+    protected override void Awake()
+    {
+        base.Awake();
+        text = "Fire";
+        textColor = Color.black;
+        backgroundColor = new Color(1.0f, 0.5f, 0.0f, 1.0f);
+    }
+
+    public override void BonusActivate()
+    {
+        BallScript.SetAllBallsType(BallScript.BallType.Fire);
+    }
+}
+
+public class BonusSteel : BonusBase
+{
+    protected override void Awake()
+    {
+        base.Awake();
+        text = "Steel";
+        textColor = Color.black;
+        backgroundColor = Color.gray;
+    }
+
+    public override void BonusActivate()
+    {
+        BallScript.SetAllBallsType(BallScript.BallType.Steel);
+    }
+}
+
+public class BonusNorm : BonusBase
+{
+    protected override void Awake()
+    {
+        base.Awake();
+        text = "Norm";
+        textColor = Color.black;
+        backgroundColor = Color.white;
+    }
+
+    public override void BonusActivate()
+    {
+        BallScript.SetAllBallsType(BallScript.BallType.Normal);
+    }
+}
